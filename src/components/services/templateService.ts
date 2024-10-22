@@ -1,6 +1,14 @@
 import { Template } from '../../models/Template';
 import { db } from '../services/firebase'; // Импортируй и настрой Firebase
-import { collection, addDoc, getDocs, doc, deleteDoc, updateDoc, getDoc } from 'firebase/firestore'; 
+import {
+  collection,
+  addDoc,
+  getDocs,
+  doc,
+  deleteDoc,
+  updateDoc,
+  getDoc,
+} from 'firebase/firestore';
 
 // Функция для получения всех шаблонов
 export const getTemplates = async (): Promise<Template[]> => {
@@ -8,15 +16,15 @@ export const getTemplates = async (): Promise<Template[]> => {
   const templatesSnapshot = await getDocs(templatesCollection);
   const templatesList = templatesSnapshot.docs.map((doc) => {
     const data = doc.data(); // Получаем все данные из документа Firestore
-    
+
     return {
-      id: doc.id,                          // ID документа из Firestore
-      title: data.title || 'Untitled',      // Извлекаем title, если его нет — используем значение по умолчанию
+      id: doc.id, // ID документа из Firestore
+      title: data.title || 'Untitled', // Извлекаем title, если его нет — используем значение по умолчанию
       description: data.description || 'No description', // То же самое для description
-      questions: data.questions || []       // Массив вопросов, если их нет, оставляем пустой массив
+      questions: data.questions || [], // Массив вопросов, если их нет, оставляем пустой массив
     } as Template; // Приводим объект к типу Template
   });
-  
+
   return templatesList;
 };
 
@@ -28,10 +36,10 @@ export const getTemplateById = async (id: string): Promise<Template | null> => {
   if (templateSnapshot.exists()) {
     const data = templateSnapshot.data();
     return {
-      id: templateSnapshot.id,           // ID документа из Firestore
-      title: data.title || 'Untitled',    // Извлекаем title
+      id: templateSnapshot.id, // ID документа из Firestore
+      title: data.title || 'Untitled', // Извлекаем title
       description: data.description || 'No description', // Извлекаем description
-      questions: data.questions || []    // Массив вопросов
+      questions: data.questions || [], // Массив вопросов
     } as Template;
   } else {
     console.error(`Template with ID ${id} not found`);
@@ -50,7 +58,10 @@ export const createTemplate = async (template: Template) => {
 };
 
 // Функция для обновления существующего шаблона
-export const updateTemplate = async (id: string, template: Template): Promise<void> => {
+export const updateTemplate = async (
+  id: string,
+  template: Template
+): Promise<void> => {
   const templateDoc = doc(db, 'templates', id);
   await updateDoc(templateDoc, template);
 };

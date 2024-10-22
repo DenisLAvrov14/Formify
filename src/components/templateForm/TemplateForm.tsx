@@ -1,7 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Button, Container, Form } from 'react-bootstrap';
 import { useNavigate, useParams } from 'react-router-dom';
-import { createTemplate, updateTemplate, getTemplateById } from '../services/templateService';
+import {
+  createTemplate,
+  updateTemplate,
+  getTemplateById,
+} from '../services/templateService';
 import { Template } from '../../models/Template';
 
 const TemplateForm = () => {
@@ -99,9 +103,17 @@ const TemplateForm = () => {
           <Form.Label>Questions</Form.Label>
           <div>
             {questions.map((question, index) => (
-              <div key={index} className="d-flex justify-content-between align-items-center">
+              <div
+                key={index}
+                className="d-flex justify-content-between align-items-center"
+              >
                 <span>{question}</span>
-                <Button variant="danger" onClick={() => handleRemoveQuestion(index)}>Remove</Button>
+                <Button
+                  variant="danger"
+                  onClick={() => handleRemoveQuestion(index)}
+                >
+                  Remove
+                </Button>
               </div>
             ))}
           </div>
@@ -117,8 +129,17 @@ const TemplateForm = () => {
           </Button>
         </Form.Group>
 
-        <Button variant="primary" type="submit" className="mt-4" disabled={loading}>
-          {loading ? 'Processing...' : template ? 'Update Template' : 'Create Template'}
+        <Button
+          variant="primary"
+          type="submit"
+          className="mt-4"
+          disabled={loading}
+        >
+          {loading
+            ? 'Processing...'
+            : template
+              ? 'Update Template'
+              : 'Create Template'}
         </Button>
       </Form>
     </Container>

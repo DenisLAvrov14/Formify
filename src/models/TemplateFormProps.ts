@@ -1,5 +1,5 @@
-import { Template } from "./Template";
+import { Template } from './Template';
 
 export type TemplateFormProps = {
-    template?: Template;
-  };
+  template?: Template;
+};

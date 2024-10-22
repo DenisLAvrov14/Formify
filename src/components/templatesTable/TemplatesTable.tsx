@@ -15,8 +15,12 @@ const TemplatesTable = () => {
           <td>Sample Template</td>
           <td>This is a sample template description</td>
           <td>
-            <Button variant="primary" size="sm" className="me-2">Edit</Button>
-            <Button variant="danger" size="sm">Delete</Button>
+            <Button variant="primary" size="sm" className="me-2">
+              Edit
+            </Button>
+            <Button variant="danger" size="sm">
+              Delete
+            </Button>
           </td>
         </tr>
         {/* Динамически добавляйте строки таблицы здесь */}
