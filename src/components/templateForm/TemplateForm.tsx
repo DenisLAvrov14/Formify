@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Button, Container, Form } from 'react-bootstrap';
+import { Button, Container, Form, Nav, Tab } from 'react-bootstrap';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   createTemplate,
@@ -7,6 +7,7 @@ import {
   getTemplateById,
 } from '../services/templateService';
 import { Template } from '../../models/Template';
+import TemplateResults from '../templateResults/TemplateResults';
 
 const TemplateForm = () => {
   const { id } = useParams(); // Получаем ID из URL
@@ -75,73 +76,99 @@ const TemplateForm = () => {
 
   return (
     <Container>
-      <h2>{template ? 'Edit Template' : 'Create Template'}</h2>
-      <Form onSubmit={handleSubmit}>
-        <Form.Group controlId="title">
-          <Form.Label>Title</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Enter title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-          />
-        </Form.Group>
+      <Tab.Container defaultActiveKey="edit">
+        <Nav variant="tabs">
+          <Nav.Item>
+            <Nav.Link eventKey="edit">Edit Template</Nav.Link>
+          </Nav.Item>
+          {template && (
+            <Nav.Item>
+              <Nav.Link eventKey="results">View Results</Nav.Link>{' '}
+              {/* Вкладка для просмотра результатов */}
+            </Nav.Item>
+          )}
+        </Nav>
 
-        <Form.Group controlId="description" className="mt-3">
-          <Form.Label>Description</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Enter description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            required
-          />
-        </Form.Group>
+        <Tab.Content>
+          <Tab.Pane eventKey="edit">
+            <h2>{template ? 'Edit Template' : 'Create Template'}</h2>
+            <Form onSubmit={handleSubmit}>
+              <Form.Group controlId="title">
+                <Form.Label>Title</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Enter title"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  required
+                />
+              </Form.Group>
 
-        <Form.Group controlId="questions" className="mt-3">
-          <Form.Label>Questions</Form.Label>
-          <div>
-            {questions.map((question, index) => (
-              <div
-                key={index}
-                className="d-flex justify-content-between align-items-center"
-              >
-                <span>{question}</span>
-                <Button
-                  variant="danger"
-                  onClick={() => handleRemoveQuestion(index)}
-                >
-                  Remove
+              <Form.Group controlId="description" className="mt-3">
+                <Form.Label>Description</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Enter description"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  required
+                />
+              </Form.Group>
+
+              <Form.Group controlId="questions" className="mt-3">
+                <Form.Label>Questions</Form.Label>
+                <div>
+                  {questions.map((question, index) => (
+                    <div
+                      key={index}
+                      className="d-flex justify-content-between align-items-center"
+                    >
+                      <span>{question}</span>
+                      <Button
+                        variant="danger"
+                        onClick={() => handleRemoveQuestion(index)}
+                      >
+                        Remove
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+                <Form.Control
+                  type="text"
+                  placeholder="Add a new question"
+                  value={newQuestion}
+                  onChange={(e) => setNewQuestion(e.target.value)}
+                  className="mt-2"
+                />
+                <Button className="mt-2" onClick={handleAddQuestion}>
+                  Add Question
                 </Button>
-              </div>
-            ))}
-          </div>
-          <Form.Control
-            type="text"
-            placeholder="Add a new question"
-            value={newQuestion}
-            onChange={(e) => setNewQuestion(e.target.value)}
-            className="mt-2"
-          />
-          <Button className="mt-2" onClick={handleAddQuestion}>
-            Add Question
-          </Button>
-        </Form.Group>
+              </Form.Group>
 
-        <Button
-          variant="primary"
-          type="submit"
-          className="mt-4"
-          disabled={loading}
-        >
-          {loading
-            ? 'Processing...'
-            : template
-              ? 'Update Template'
-              : 'Create Template'}
-        </Button>
-      </Form>
+              <Button
+                variant="primary"
+                type="submit"
+                className="mt-4"
+                disabled={loading}
+              >
+                {loading
+                  ? 'Processing...'
+                  : template
+                    ? 'Update Template'
+                    : 'Create Template'}
+              </Button>
+            </Form>
+          </Tab.Pane>
+
+          {/* Вкладка с результатами */}
+          {template && (
+            <Tab.Pane eventKey="results">
+              <TemplateResults />{' '}
+              {/* Отображение компонента результатов */}
+            </Tab.Pane>
+          )}
+        </Tab.Content>
+      </Tab.Container>
     </Container>
   );
 };

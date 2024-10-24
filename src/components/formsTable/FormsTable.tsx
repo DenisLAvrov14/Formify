@@ -1,23 +1,31 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Table, Button } from 'react-bootstrap';
-import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
+import { collection, getDocs, deleteDoc, doc, where, query } from 'firebase/firestore';
 import { db } from '../services/firebase';
-import { FormType } from '../../models/FormType';
+import { getAuth } from 'firebase/auth';
 
 const FormsTable = () => {
-  const [forms, setForms] = useState<FormType[]>([]);
-
+  const [forms, setForms] = useState<any[]>([]);
   const navigate = useNavigate();
+  const auth = getAuth();
+  const user = auth.currentUser;
 
   useEffect(() => {
     const fetchForms = async () => {
       try {
-        const querySnapshot = await getDocs(collection(db, 'forms'));
+        if (!user) {
+          console.error("No user is logged in");
+          return;
+        }
+
+        // Получаем формы, которые заполнил текущий пользователь
+        const q = query(collection(db, 'form_answers'), where('userId', '==', user.uid));
+        const querySnapshot = await getDocs(q);
         const formsData = querySnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
-        })) as FormType[];
+        }));
         setForms(formsData);
       } catch (error) {
         console.error('Error fetching forms:', error);
@@ -25,25 +33,29 @@ const FormsTable = () => {
     };
 
     fetchForms();
-  }, []);
+  }, [user]);
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = useCallback(async (id: string) => {
     if (window.confirm('Are you sure you want to delete this form?')) {
       try {
-        await deleteDoc(doc(db, 'forms', id));
+        await deleteDoc(doc(db, 'form_answers', id)); // Удаляем форму из form_answers
         setForms(forms.filter((form) => form.id !== id));
       } catch (error) {
         console.error('Error deleting form:', error);
       }
     }
-  };
+  }, [forms]);
+
+  const handleNavigate = useCallback((templateId: string) => {
+    navigate(`/template-results/${templateId}`);
+  }, [navigate]);
 
   return (
     <Table striped bordered hover>
       <thead>
         <tr>
-          <th>Title</th>
-          <th>Questions</th>
+          <th>Template ID</th>
+          <th>Submitted At</th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -51,8 +63,12 @@ const FormsTable = () => {
         {forms.length > 0 ? (
           forms.map((form) => (
             <tr key={form.id}>
-              <td>{form.title}</td>
-              <td>{form.questions.join(', ')}</td>
+              <td>{form.templateId}</td>
+              <td>
+                {form.submittedAt?.seconds
+                  ? new Date(form.submittedAt.seconds * 1000).toLocaleString()
+                  : 'No date available'}
+              </td>
               <td>
                 <Button
                   variant="danger"
@@ -65,17 +81,9 @@ const FormsTable = () => {
                   variant="info"
                   size="sm"
                   className="ms-2"
-                  onClick={() => navigate(`/view-form/${form.id}`)}
+                  onClick={() => handleNavigate(form.templateId)}
                 >
-                  View
-                </Button>
-                <Button
-                  variant="warning"
-                  size="sm"
-                  className="ms-2"
-                  onClick={() => navigate(`/edit-form/${form.id}`)} // Кнопка для редактирования формы
-                >
-                  Edit
+                  View Results
                 </Button>
               </td>
             </tr>

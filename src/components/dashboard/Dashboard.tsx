@@ -1,12 +1,18 @@
 import { useState } from 'react';
 import { Container, Nav, Tab, Button, Row, Col } from 'react-bootstrap';
-import TemplatesTable from '../templatesTable/TemplatesTable';
 import FormsTable from '../formsTable/FormsTable';
+import TemplatesTable from '../templatesTable/TemplatesTable'; // Подключаем TemplatesTable
 import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
   const [activeKey, setActiveKey] = useState<string>('templates');
   const navigate = useNavigate();
+
+  const handleTemplateSelect = (templateId: string) => {
+    // Логика для обработки выбранного шаблона
+    console.log(`Selected template ID: ${templateId}`);
+    navigate(`/template-results/${templateId}`); // Переход на страницу с результатами
+  };
 
   return (
     <Container className="mt-4">
@@ -35,19 +41,9 @@ const Dashboard = () => {
                 </Button>
               </Col>
             </Row>
-            <TemplatesTable />
+            <TemplatesTable onSelectTemplate={handleTemplateSelect} />
           </Tab.Pane>
           <Tab.Pane eventKey="forms">
-            <Row className="mb-3">
-              <Col className="text-end">
-                <Button
-                  variant="success"
-                  onClick={() => navigate('/create-form')}
-                >
-                  Create New Form
-                </Button>
-              </Col>
-            </Row>
             <FormsTable />
           </Tab.Pane>
         </Tab.Content>

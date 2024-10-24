@@ -6,12 +6,13 @@ import {
 } from 'react-router-dom';
 import Authentication from './components/authentication/authentication';
 import Dashboard from './components/dashboard/Dashboard';
-import TemplateDashboard from './components/templateDashboard/TemplateDashboard';
 import TemplateForm from './components/templateForm/TemplateForm';
 import FormCreation from './components/formCreation/FormCreation';
 import ProtectedRoute from './components/protectedRoute/ProtectedRoute';
 import FormDetails from './components/formDatails/FormDetails';
 import FormEdit from './components/formEdit/FormEdit ';
+import FormAnswer from './components/formAnswer/FormAnswer';
+import TemplateResults from './components/templateResults/TemplateResults';
 
 function App() {
   return (
@@ -26,15 +27,7 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route
-          path="/templates"
-          element={
-            <ProtectedRoute>
-              <TemplateDashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
+            <Route
           path="/create-template"
           element={
             <ProtectedRoute>
@@ -74,7 +67,22 @@ function App() {
             </ProtectedRoute>
           }
         />
-
+        <Route
+          path="/fill-form/:id"
+          element={
+            <ProtectedRoute>
+              <FormAnswer />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/template-results/:templateId"
+          element={
+            <ProtectedRoute>
+              <TemplateResults />
+            </ProtectedRoute>
+          }
+        />
         <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
     </Router>

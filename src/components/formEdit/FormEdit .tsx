@@ -45,7 +45,9 @@ const FormEdit = () => {
   }, [id]);
 
   const handleQuestionChange = (index: number, newValue: string) => {
-    const updatedQuestions = questions.map((q, i) => (i === index ? newValue : q));
+    const updatedQuestions = questions.map((q, i) =>
+      i === index ? newValue : q
+    );
     setQuestions(updatedQuestions);
   };
 
@@ -71,7 +73,10 @@ const FormEdit = () => {
     };
 
     // Проверяем, изменились ли данные
-    if (title === form.title && questions.join(',') === form.questions.join(',')) {
+    if (
+      title === form.title &&
+      questions.join(',') === form.questions.join(',')
+    ) {
       alert('No changes detected to update.');
       return;
     }
@@ -95,7 +100,9 @@ const FormEdit = () => {
   return (
     <Container className="mt-4">
       <h2 className="text-center mb-4">Edit Form</h2>
-      {updateSuccess && <Alert variant="success">Form updated successfully!</Alert>}
+      {updateSuccess && (
+        <Alert variant="success">Form updated successfully!</Alert>
+      )}
       <Form onSubmit={handleSubmit}>
         <Form.Group controlId="title" className="mb-3">
           <Form.Label>Title</Form.Label>

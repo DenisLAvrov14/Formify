@@ -15,7 +15,7 @@ export const getTemplates = async (): Promise<Template[]> => {
   const templatesCollection = collection(db, 'templates');
   const templatesSnapshot = await getDocs(templatesCollection);
   const templatesList = templatesSnapshot.docs.map((doc) => {
-    const data = doc.data(); // Получаем все данные из документа Firestore
+    const data = doc.data(); 
 
     return {
       id: doc.id, // ID документа из Firestore
@@ -43,7 +43,7 @@ export const getTemplateById = async (id: string): Promise<Template | null> => {
     } as Template;
   } else {
     console.error(`Template with ID ${id} not found`);
-    return null; // Если документ с указанным ID не найден
+    return null; // Ошибка если документ с указанным ID не найден
   }
 };
 
